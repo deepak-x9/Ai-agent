@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://ai-agent.onrender.com";
+const API_BASE_URL = "https://ai-agent-jyij.onrender.com";
 const SESSION_KEY = "qa_assistant_session_id";
 const CHAT_KEY = "qa_assistant_chat_history";
 
