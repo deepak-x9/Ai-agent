@@ -1,0 +1,147 @@
+:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --card: #1f2937;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #3b82f6;
+  --accent-dark: #2563eb;
+  --error: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at top, #1e293b, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 920px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 1rem;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 1rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.messages {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 65vh;
+}
+
+.message {
+  margin: 0.75rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  max-width: 90%;
+  line-height: 1.45;
+}
+
+.message.user {
+  margin-left: auto;
+  background: #1d4ed8;
+}
+
+.message.assistant {
+  margin-right: auto;
+  background: var(--card);
+}
+
+.message .meta {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--panel);
+  color: var(--text);
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-dark);
+}
+
+button.secondary {
+  background: #374151;
+}
+
+.loading {
+  color: var(--muted);
+  padding-left: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+pre {
+  position: relative;
+  background: #111827;
+  border-radius: 8px;
+  padding-top: 2.1rem;
+}
+
+.copy-code {
+  position: absolute;
+  right: 0.6rem;
+  top: 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  background: #4b5563;
+}
+
+.error {
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 680px) {
+  .chat-form {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    width: 100%;
+  }
+}
