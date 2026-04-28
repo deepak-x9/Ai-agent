@@ -7,7 +7,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from openai import OpenAI
+import google.generativeai as genai
+import os
 
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+model = genai.GenerativeModel("gemini-pro")
+
+response = model.generate_content("Hello")
+
+print(response.text)
 
 load_dotenv()
 
