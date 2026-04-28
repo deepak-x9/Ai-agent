@@ -20,6 +20,8 @@ if not GEMINI_API_KEY:
 
 # Initialize Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
+for m in client.models.list():
+    print(m.name)
 
 app = FastAPI(title="Programming Q&A AI Assistant API", version="1.0.0")
 
