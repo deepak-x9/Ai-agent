@@ -98,7 +98,7 @@ def get_or_create_session_id(session_id: Optional[str]) -> str:
 def generate_ai_response(message: str) -> str:
     try:
         response = client.models.generate_content(
-            model="models/gemini-2.0-flash",
+            model="models/gemini-2.0-flash-lite",
             contents=message,
         )
         return response.text or "No response from AI."
