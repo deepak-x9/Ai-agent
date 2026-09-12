@@ -1,14 +1,12 @@
 # Programming Q&A AI Assistant (Full-Stack)
 
-A beginner-friendly but scalable client-server application for answering programming questions using OpenAI.
 
 ## 1) Project Architecture
 
 - **Backend**: FastAPI (`backend/app.py`)
   - Exposes REST API endpoint `/chat`
   - Maintains **session-based chat history** in memory
-  - Uses OpenAI API for AI responses
-  - Detects likely language (Python/Java/C++/JavaScript/SQL)
+language (Python/Java/C++/JavaScript/SQL)
 - **Frontend**: Vanilla HTML/CSS/JavaScript (`frontend/`)
   - Chat-style UI
   - Renders Markdown responses + syntax highlighting
@@ -65,9 +63,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4.1-mini
-```
+
 
 ### Step C: Run backend server
 
@@ -98,7 +94,6 @@ Open: `http://localhost:5500`
 
 > Note: `frontend/app.js` points to `http://localhost:8000` by default.
 
----
 
 ## 6) API Contract
 
@@ -162,7 +157,7 @@ Also consider:
 
 1. Push repo to GitHub
 2. Create Render Web Service for backend (`uvicorn app:app --host 0.0.0.0 --port $PORT`)
-3. Set environment variable `OPENAI_API_KEY`
+
 4. Host frontend as static site (Render Static Site or Netlify/Vercel)
 5. Set `API_BASE_URL` in `frontend/app.js` to deployed backend URL
 
@@ -189,8 +184,4 @@ Also consider:
 ---
 
 ## 11) Security Notes
-
-- Never commit real API keys
-- Keep `.env` out of source control
-- Add request validation and rate limits for public deployment
 
