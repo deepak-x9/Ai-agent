@@ -11,7 +11,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
- codex/design-programming-qa-ai-assistant-application-31mmih
 
 client = Groq(api_key=os.environ["k_aIXFJXkRJpW07Nn81pyxWGdyb3FYC56X3r8QajIaPk8OvDNBohOl"])
 
