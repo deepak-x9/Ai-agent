@@ -1,14 +1,12 @@
 # Programming Q&A AI Assistant (Full-Stack)
 
-A beginner-friendly but scalable client-server application for answering programming questions using the Groq API.
 
 ## 1) Project Architecture
 
 - **Backend**: FastAPI (`backend/app.py`)
   - Exposes REST API endpoint `/chat`
   - Maintains **session-based chat history** in memory
-- Uses Groq's OpenAI-compatible API for AI responses
-  - Detects likely language (Python/Java/C++/JavaScript/SQL)
+language (Python/Java/C++/JavaScript/SQL)
 - **Frontend**: Vanilla HTML/CSS/JavaScript (`frontend/`)
   - Chat-style UI
   - Renders Markdown responses + syntax highlighting
@@ -65,10 +63,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-GROQ_API_KEY=your_groq_api_key_here
-GROQ_MODEL=llama-3.3-70b-versatile
-FRONTEND_ORIGINS=http://localhost:5500
-```
+
 
 ### Step C: Run backend server
 
@@ -98,10 +93,7 @@ python -m http.server 5500
 Open: `http://localhost:5500`
 
 > Note: `frontend/app.js` points to `http://localhost:8000` by default.
-> For deployment, define `window.QA_API_BASE_URL` before loading `app.js` to use
-> your hosted backend without editing the application source.
 
----
 
 ## 6) API Contract
 
@@ -165,7 +157,7 @@ Also consider:
 
 1. Push repo to GitHub
 2. Create Render Web Service for backend (`uvicorn app:app --host 0.0.0.0 --port $PORT`)
-3. Set environment variable `GROQ_API_KEY`
+
 4. Host frontend as static site (Render Static Site or Netlify/Vercel)
 5. Set `API_BASE_URL` in `frontend/app.js` to deployed backend URL
 
@@ -193,6 +185,3 @@ Also consider:
 
 ## 11) Security Notes
 
-- Never commit real API keys. If a key is shared in chat, revoke/rotate it in the provider dashboard before using a replacement locally.
-- Keep `.env` out of source control
-- Add request validation and rate limits for public deployment

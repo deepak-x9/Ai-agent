@@ -2,12 +2,16 @@ import os
 import uuid
 from typing import Dict, List, Literal, Optional
 
+ codex/design-programming-qa-ai-assistant-application-31mmih
 import httpx
+
+ main
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+ codex/design-programming-qa-ai-assistant-application-31mmih
 
 load_dotenv()
 
@@ -16,10 +20,28 @@ load_dotenv()
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 DEFAULT_MODEL_NAME = "llama-3.3-70b-versatile"
 
+# ✅ NEW Gemini SDK
+from google import genai
+
+# Load env variables
+load_dotenv()
+
+# Get Gemini API key
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is missing. Add it to your environment variables.")
+
+# Initialize Gemini client
+client = genai.Client(api_key=GEMINI_API_KEY)
+for m in client.models.list():
+    print(m.name)
+ main
+
 app = FastAPI(title="Programming Q&A AI Assistant API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
+ codex/design-programming-qa-ai-assistant-application-31mmih
     # Use an explicit origin list in production, for example:
     # FRONTEND_ORIGINS=https://your-app.example
     allow_origins=[
@@ -28,15 +50,24 @@ app.add_middleware(
         if origin.strip()
     ],
     allow_credentials=False,
+
+    allow_origins=["*"],
+    allow_credentials=True,
+ main
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+ codex/design-programming-qa-ai-assistant-application-31mmih
 # In-memory session store. Replace with Redis/Postgres for production.
+
+# In-memory session store
+ main
 chat_sessions: Dict[str, List[dict]] = {}
 
 SYSTEM_PROMPT = (
     "You are an expert programming mentor. Help users with Python, Java, C++, "
+ codex/design-programming-qa-ai-assistant-application-31mmih
     "JavaScript, and SQL, but also provide guidance for other languages when asked. "
     "Your replies must be clear, practical, and beginner-friendly. "
     "Always include: 1) a short explanation, 2) at least one code example in fenced "
@@ -49,6 +80,21 @@ SYSTEM_PROMPT = (
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=2, max_length=4000)
     session_id: Optional[str] = Field(default=None, min_length=1, max_length=128)
+
+    "JavaScript, and SQL. Always provide:\n"
+    "1) Clear explanation\n"
+    "2) Code example\n"
+    "3) Optional improvements\n"
+)
+
+# =======================
+# Models
+# =======================
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=2, max_length=4000)
+    session_id: Optional[str] = None
+ main
 
 
 class ChatResponse(BaseModel):
@@ -63,7 +109,7 @@ class ChatResponse(BaseModel):
         "unknown",
     ]
 
-
+ codex/design-programming-qa-ai-assistant-application-31mmih
 def detect_language(question: str) -> str:
     text = question.lower()
     rules = {
@@ -76,10 +122,29 @@ def detect_language(question: str) -> str:
 
     for lang, keywords in rules.items():
         if any(keyword in text for keyword in keywords):
+
+# =======================
+# Helper functions
+# =======================
+
+def detect_language(question: str) -> str:
+    text = question.lower()
+    rules = {
+        "python": ["python", "pandas", "numpy", "def "],
+        "java": ["java", "spring", "public static"],
+        "cpp": ["c++", "std::", "#include"],
+        "javascript": ["js", "node", "react"],
+        "sql": ["select", "join", "sql"],
+    }
+
+    for lang, keywords in rules.items():
+        if any(k in text for k in keywords):
+main
             return lang
     return "unknown"
 
 
+ codex/design-programming-qa-ai-assistant-application-31mmih
 def get_ai_settings() -> tuple[str, str]:
     """Read model settings when a request arrives, keeping credentials server-side."""
     api_key = os.getenv("GROQ_API_KEY")
@@ -119,10 +184,44 @@ def health_check() -> dict:
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
+
+def get_or_create_session_id(session_id: Optional[str]) -> str:
+    if session_id and session_id in chat_sessions:
+        return session_id
+
+    new_id = session_id or str(uuid.uuid4())
+    chat_sessions[new_id] = []
+    return new_id
+
+
+def generate_ai_response(message: str) -> str:
+    try:
+        response = client.models.generate_content(
+            model="models/gemini-2.0-flash-lite",
+            contents=message,
+        )
+        return response.text or "No response from AI."
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini error: {e}")
+
+
+# =======================
+# Routes
+# =======================
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "model": "gemini-1.5-flash"}
+
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+main
     user_message = request.message.strip()
     if not user_message:
         raise HTTPException(status_code=400, detail="Message cannot be empty.")
 
+ codex/design-programming-qa-ai-assistant-application-31mmih
     session_id = request.session_id or str(uuid.uuid4())
     detected_language = detect_language(user_message)
 
@@ -157,5 +256,24 @@ def chat(request: ChatRequest) -> ChatResponse:
 
 @app.delete("/chat/{session_id}")
 def clear_session(session_id: str) -> dict:
+
+    session_id = get_or_create_session_id(request.session_id)
+    detected_language = detect_language(user_message)
+
+    # Add system prompt
+    final_prompt = f"{SYSTEM_PROMPT}\n\nUser: {user_message}"
+
+    ai_answer = generate_ai_response(final_prompt)
+
+    return ChatResponse(
+        session_id=session_id,
+        answer=ai_answer,
+        detected_language=detected_language,
+    )
+
+
+@app.delete("/chat/{session_id}")
+def clear_session(session_id: str):
+main
     chat_sessions.pop(session_id, None)
     return {"cleared": True, "session_id": session_id}
